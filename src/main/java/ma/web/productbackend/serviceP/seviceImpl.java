@@ -2,12 +2,15 @@ package ma.web.productbackend.serviceP;
 
 import lombok.AllArgsConstructor;
 import ma.web.productbackend.entities.Product;
+import ma.web.productbackend.exeption.ProductNotFoundExeption;
 import ma.web.productbackend.repositories.productRepositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @Service
 public class seviceImpl implements  service{
@@ -17,10 +20,20 @@ public class seviceImpl implements  service{
     private productRepositories productRepositories;
 
     @Override
-    public List<Product> getproductbyname(String name) {
+    public Product getproductbyname(String name) {
 
-        return productRepositories.findByNameContains(name);
+        return productRepositories.findAll()
+                .stream().
+                filter(product -> product.getName().equals(name)).
+                findFirst().orElseThrow(() -> new ProductNotFoundExeption("product not Found exeption"));
+
     }
+
+    @Override
+    public Page<Product> getproductsbyname(String name, Pageable pageable) {
+        return  this.productRepositories.findByNameContains(name, pageable);
+    }
+
 
     @Override
     public List<Product> getSelectedP(Boolean selected) {
@@ -48,15 +61,10 @@ public class seviceImpl implements  service{
     }
 
     @Override
-    public Product getProductById(Long id) {
-      Product product =  productRepositories.findById(id).orElse(null);
-      if(product == null){
-          try {
-              throw new Exception("not found any product");
-          } catch (Exception e) {
-              throw new RuntimeException(e);
-          }
-      }
+    public Product getProductById(Long id)  {
+      Product product =  productRepositories.findById(id)
+              .orElseThrow(() -> new ProductNotFoundExeption("Product not found exeption"));
+
         return product;
     }
 

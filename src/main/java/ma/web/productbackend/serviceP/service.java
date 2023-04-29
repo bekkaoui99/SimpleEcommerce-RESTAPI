@@ -1,6 +1,7 @@
 package ma.web.productbackend.serviceP;
 
 import ma.web.productbackend.entities.Product;
+import ma.web.productbackend.exeption.ProductNotFoundExeption;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface service {
-    List<Product> getproductbyname(String name );
+
+    Product getproductbyname(String name) ;
+
+    Page<Product> getproductsbyname(String name , Pageable pageable) ;
 
     List<Product> getSelectedP(Boolean selected);
 

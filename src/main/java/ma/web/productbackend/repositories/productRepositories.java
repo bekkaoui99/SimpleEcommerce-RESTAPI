@@ -12,7 +12,7 @@ import java.util.List;
 public interface productRepositories extends JpaRepository<Product,Long> {
 
     Page<Product> findByNameContains(String name , Pageable pageable);
-    List<Product> findByNameContains(String name);
+    Product findByNameContains(String name);
 
     List<Product> findBySelected(boolean selected);
 
